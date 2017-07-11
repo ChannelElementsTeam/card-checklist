@@ -187,10 +187,10 @@
       onItemCheckboxClick(event) {
         this.stateController.arrayElementUpdate('items', event.model.item.id, "checked", !event.model.item.checked);
       }
-      handleCardToCardMessageReceived(participant, message) {
-        switch (message.json.type) {
+      handleCardToCardMessageReceived(participant, cardExchangeMessage, channelMessage) {
+        switch (cardExchangeMessage.json.details.data.type) {
           case 'mutation':
-            this.stateController.handleInboundMutation(message.json.details, message);
+            this.stateController.handleInboundMutation(cardExchangeMessage.json.details.data.details, channelMessage);
             break;
           default:
             break;
