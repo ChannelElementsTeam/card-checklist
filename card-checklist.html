@@ -83,6 +83,11 @@
 <dom-module id="card-checklist-viewer">
   <template>
     <style>
+      .container {
+        border: 1px solid #ccc;
+        padding: 4px;
+      }
+
       .caption {
         font-size: 125%;
         margin: 0 0 5px 30px;
@@ -129,9 +134,9 @@
         font-size: 14px;
       }
     </style>
-    <div>
+    <div class="container">
       <div class="caption">{{data.caption}}</div>
-      <div class="container">
+      <div class="innerContainer">
         <template is="dom-repeat" items="{{data.items}}">
           <div class="listItem">
             <div class="checkContainer">
