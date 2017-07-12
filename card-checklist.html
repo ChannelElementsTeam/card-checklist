@@ -202,6 +202,13 @@
       spliceArray(path, index, removeCount, record) {
         this.splice("data." + path, index, removeCount, record);
       }
+      updateRecord(path, recordId, index, updatedRecordValue, elementPath, elementValue) {
+        if (elementPath) {
+          this.set('data.' + path + '.' + index + '.' + elementPath, elementValue);
+        } else {
+          this.notifyPath('data.' + path + '.' + index, updatedRecordValue);
+        }
+      }
     }
     window.customElements.define(CardChecklistViewer.is, CardChecklistViewer);
   </script>
