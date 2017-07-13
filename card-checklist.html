@@ -1,8 +1,7 @@
-<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer-channels-card/polymer-channels-card.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../distributed-state-controller/distributed-state-controller.html">
 
 <dom-module id="card-checklist-composer">
   <template>
@@ -56,13 +55,8 @@
     </div>
   </template>
   <script>
-    class CardChecklistComposer extends Polymer.Element {
+    class CardChecklistComposer extends PolymerChannelsCardComposer {
       static get is() { return 'card-checklist-composer'; }
-      static get properties() {
-        return {
-          channel: Object
-        };
-      }
       onKeydown(event) {
         if (event.keyCode === 13) {
           this.onSend();
@@ -71,7 +65,7 @@
       onSend() {
         const message = this.$.txt.value.trim();
         if (message.length > 0) {
-          this.channel.sendCard(this, { json: { caption: message, items: [] } }, true, false);
+          this.send({ caption: message, items: [] });
           this.$.txt.value = '';
         }
       }
@@ -152,25 +146,8 @@
     </div>
   </template>
   <script>
-    class CardChecklistViewer extends Polymer.Element {
+    class CardChecklistViewer extends PolymerChannelsCardViewer {
       static get is() { return 'card-checklist-viewer'; }
-      static get properties() {
-        return {
-          data: Object,
-          channel: Object
-        };
-      }
-      constructor() {
-        super();
-        this.stateController = new DistributedStateController();
-      }
-      connectedCallback() {
-        super.connectedCallback();
-        // this.set('data', { caption: "My Checklist", items: [] });
-        // this.splice('data.items', 0, 0, { id: "1", checked: false, message: "This is the first item" });
-        // this.splice('data.items', 1, 0, { id: "2", checked: true, message: "This is the second item" });
-        this.stateController.initialize(this, this.data);
-      }
       getCheckboxIcon(isChecked) {
         return isChecked ? "icons:check" : "icons:check-box-outline-blank";
       }
@@ -186,28 +163,6 @@
       }
       onItemCheckboxClick(event) {
         this.stateController.arrayElementUpdate('items', event.model.item.id, "checked", !event.model.item.checked);
-      }
-      handleCardToCardMessageReceived(participant, cardExchangeMessage, channelMessage) {
-        switch (cardExchangeMessage.json.details.data.type) {
-          case 'mutation':
-            this.stateController.handleInboundMutation(cardExchangeMessage.json.details.data.details, channelMessage);
-            break;
-          default:
-            break;
-        }
-      }
-      sendMutation(mutation) {
-        return this.channel.sendCardToCardMessage(this, { json: { type: "mutation", details: mutation } }, true, false);
-      }
-      spliceArray(path, index, removeCount, record) {
-        this.splice("data." + path, index, removeCount, record);
-      }
-      updateRecord(path, recordId, index, updatedRecordValue, elementPath, elementValue) {
-        if (elementPath) {
-          this.set('data.' + path + '.' + index + '.' + elementPath, elementValue);
-        } else {
-          this.notifyPath('data.' + path + '.' + index, updatedRecordValue);
-        }
       }
     }
     window.customElements.define(CardChecklistViewer.is, CardChecklistViewer);
