@@ -1,4 +1,16 @@
 {
   "composerTag": "card-checklist-composer",
-  "viewerTag": "card-checklist-viewer"
+  "viewerTag": "card-checklist-viewer",
+  "name": "Checklist",
+  "categories": [
+    "utilities/lists/checklists",
+    "samples/collaboration"
+  ],
+  "websiteUrl": "https://github.com/ChannelElementsTeam/card-checklist",
+  "description": "A simple collaborative checklist with caption",
+  "iconUrl": "images/icon.png",
+  "price": 0.01,
+  "requestsPayment": false,
+  "offersPayment": false,
+  "collaborative": true
 }

@@ -1,5 +1,6 @@
 {
   "name": "card-checklist",
+  "author": "Kingston Duffie <kduffie@hivepoint.com>",
   "description": "A Channels card containing a simple shared checklist",
   "main": "card-checklist.html",
   "dependencies": {
