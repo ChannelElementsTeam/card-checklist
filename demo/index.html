@@ -8,9 +8,8 @@
   <title>card-checklist demo</title>
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
+  <link rel="import" href="../../polymer-channels-card/channels-card-demo-helper.html">
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
   <link rel="import" href="../card-checklist.html">
 
   <custom-style>
@@ -22,17 +21,8 @@
 
 <body>
   <div class="vertical-section-container centered">
-    <h3>Basic card-checklist demo</h3>
-    <demo-snippet>
-      <template>
-        <div style="width:400px;border:1px solid #ccc;margin:25px 0;padding:5px;">
-          <card-checklist-composer></card-checklist-composer>
-        </div>
-        <div style="width:400px;border:1px solid #ccc;margin:25px 0;padding:5px;">
-          <card-checklist-viewer></card-checklist-viewer>
-        </div>
-      </template>
-    </demo-snippet>
+    <h3>${cardName} demo</h3>
+    <channels-card-demo-helper composer-tag-name="card-checklist-composer" viewer-tag-name="card-checklist-viewer"></channels-card-demo-helper>
   </div>
 </body>
 

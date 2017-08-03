@@ -1,30 +1,16 @@
 <link rel="import" href="../polymer-channels-card/polymer-channels-card.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="card-checklist-composer">
   <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
     <style>
       .container {
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        -ms-flex-direction: row;
-        -webkit-flex-direction: row;
-        flex-direction: row;
-        -ms-flex-align: center;
-        -webkit-align-items: center;
-        align-items: center;
         padding: 10px 3px;
-      }
-
-      .flex {
-        -ms-flex: 1 1 0.000000001px;
-        -webkit-flex: 1;
-        flex: 1;
-        -webkit-flex-basis: 0.000000001px;
-        flex-basis: 0.000000001px;
       }
 
       .buttonPanel {
@@ -45,7 +31,7 @@
         color: #000;
       }
     </style>
-    <div class="container">
+    <div class="container horizontal layout">
       <div class="flex" style="position: relative;">
         <input id="txt" placeholder="Enter the checklist caption" on-keydown="onKeydown">
       </div>
@@ -65,7 +51,7 @@
       onSend() {
         const message = this.$.txt.value.trim();
         if (message.length > 0) {
-          this.send({ caption: message, items: [] });
+          this.send({ caption: message, items: [], hideChecked: true });
           this.$.txt.value = '';
         }
       }
@@ -76,36 +62,15 @@
 
 <dom-module id="card-checklist-viewer">
   <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
     <style>
-      .container {
-        border: 1px solid #ccc;
-        padding: 4px;
-      }
-
       .caption {
-        font-size: 125%;
+        font-size: 135%;
         margin: 0 0 5px 30px;
       }
 
       .listItem {
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        -ms-flex-direction: row;
-        -webkit-flex-direction: row;
-        flex-direction: row;
-        -ms-flex-align: center;
-        -webkit-align-items: center;
-        align-items: center;
         padding: 3px;
-      }
-
-      .flex {
-        -ms-flex: 1 1 0.000000001px;
-        -webkit-flex: 1;
-        flex: 1;
-        -webkit-flex-basis: 0.000000001px;
-        flex-basis: 0.000000001px;
       }
 
       .checkContainer {
@@ -127,21 +92,30 @@
         width: 100%;
         font-size: 14px;
       }
+
+      paper-checkbox {
+        margin-top: 4px;
+        color: #aaa;
+        --paper-checkbox-checkmark-color: black;
+        --paper-checkbox-checked-color: white;
+        --paper-checkbox-label-color: #555;
+      }
     </style>
     <div class="container">
       <div class="caption">{{data.caption}}</div>
       <div class="innerContainer">
-        <template is="dom-repeat" items="{{data.items}}">
-          <div class="listItem">
+        <template id="itemList" is="dom-repeat" items="{{data.items}}" filter="filterItems">
+          <div class="listItem layout horizontal start">
             <div class="checkContainer">
               <iron-icon icon="[[getCheckboxIcon(item.checked)]]" on-click="onItemCheckboxClick"></iron-icon>
             </div>
-            <div class="messageContainer">{{item.message}}</div>
+            <div class="messageContainer flex">{{item.message}}</div>
           </div>
         </template>
       </div>
       <div class="entryContainer">
         <input id="entryText" type="text" placeholder="Enter new item and hit ENTER" on-keydown="onEntryKeyDown">
+        <paper-checkbox id="hideCheckbox" checked="[[data.hideChecked]]" on-change="onHideChanged">Hide checked items</paper-checkbox>
       </div>
     </div>
   </template>
@@ -150,6 +124,12 @@
       static get is() { return 'card-checklist-viewer'; }
       getCheckboxIcon(isChecked) {
         return isChecked ? "icons:check" : "icons:check-box-outline-blank";
+      }
+      onHideChanged() {
+        this.stateController.updateProperty('hideChecked', this.$.hideCheckbox.checked);
+      }
+      filterItems(item) {
+        return !item.checked || !this.data.hideChecked;
       }
       onEntryKeyDown(event) {
         if (event.keyCode === 13) {
@@ -163,6 +143,14 @@
       }
       onItemCheckboxClick(event) {
         this.stateController.arrayElementUpdate('items', event.model.item.id, "checked", !event.model.item.checked);
+      }
+      setProperty(path, value) {
+        super.setProperty(path, value);
+        this.$.itemList.render();
+      }
+      updateRecord(path, recordId, index, updatedRecordValue, elementPath, elementValue) {
+        super.updateRecord(path, recordId, index, updatedRecordValue, elementPath, elementValue);
+        this.$.itemList.render();
       }
     }
     window.customElements.define(CardChecklistViewer.is, CardChecklistViewer);
